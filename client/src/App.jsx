@@ -131,6 +131,7 @@ function App() {
           onClose={cerrarModales}
         />
       )}
+      <img src="../public/parking.png" alt="Parking Icon" />
     </div>
   );
 }
