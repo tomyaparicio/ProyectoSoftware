@@ -1,35 +1,45 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import Lugar from './components/Lugar';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="app">
+      <h1>Gestión de Estacionamiento</h1>
+      <div className="leyenda">
+        <div className="leyenda-item">
+          <div className="cuadro libre"></div> libre
+        </div>
+        <div className="leyenda-item">
+          <div className="cuadro ocupado"></div> ocupado
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+      <div className="estacionamiento">
+        <Lugar texto="A1" ocupado={false} />
+        <Lugar texto="A2" ocupado={false} />
+        <Lugar texto="A3" ocupado={false} />
+        <Lugar texto="A4" ocupado={false} />
+        <Lugar texto="A5" ocupado={false} />
+        <Lugar texto="B1" ocupado={false} />
+        <Lugar texto="B2" ocupado={false} />
+        <Lugar texto="B3" ocupado={true} />
+        <Lugar texto="B4" ocupado={false} />
+        <Lugar texto="B5" ocupado={false} />
+        <Lugar texto="C1" ocupado={false} />
+        <Lugar texto="C2" ocupado={false} />
+        <Lugar texto="C3" ocupado={false} />
+        <Lugar texto="C4" ocupado={false} />
+        <Lugar texto="C5" ocupado={true} />
+        <Lugar texto="D1" ocupado={false} />
+        <Lugar texto="D2" ocupado={false} />
+        <Lugar texto="D3" ocupado={true} />
+        <Lugar texto="D4" ocupado={true} />
+        <Lugar texto="D5" ocupado={false} />
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+      <div className="icono-estacionamiento">
+        <img src="../public/parking.png" alt="Parking Icon" />
+      </div>
+    </div>
+  );
 }
 
-export default App
+export default App;
