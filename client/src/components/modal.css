@@ -52,3 +52,11 @@
   .modal-buttons button:hover {
     background-color: #555;
   }
+
+  .lu{
+    color: #000;
+}
+
+  .error{
+    color:#ff4c4c;
+  }

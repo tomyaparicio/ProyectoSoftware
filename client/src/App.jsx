@@ -11,6 +11,7 @@ function App() {
   const [datosLugar, setDatosLugar] = useState(null);
   const [mostrarModalReserva, setMostrarModalReserva] = useState(false);
   const [mostrarModalModificar, setMostrarModalModificar] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     // Cargar los lugares al iniciar
@@ -35,6 +36,26 @@ function App() {
     setDatosLugar(null);
     setMostrarModalReserva(false);
     setMostrarModalModificar(false);
+    setError('');
+  };
+
+  const validarDatos = (nombre, dni, patente, modelo) => {
+    if (!nombre || !dni || !patente || !modelo) {
+      return 'Todos los campos deben estar completos.';
+    }
+    if (nombre.length < 4) {
+      return 'El nombre debe tener al menos 4 caracteres.';
+    }
+    if (dni.length < 6 || !/^\d+$/.test(dni)) {
+      return 'El DNI debe tener al menos 6 caracteres y contener solo números.';
+    }
+    if (patente.length < 6) {
+      return 'La patente debe tener al menos 6 caracteres.';
+    }
+    if (modelo.length < 5) {
+      return 'El modelo del vehículo debe tener al menos 5 caracteres.';
+    }
+    return '';
   };
 
   const manejarReserva = (e) => {
@@ -43,6 +64,13 @@ function App() {
     const dni = e.target[1].value;
     const patente = e.target[2].value;
     const modelo = e.target[3].value;
+
+    // Validar datos
+    const errorMensaje = validarDatos(nombre, dni, patente, modelo);
+    if (errorMensaje) {
+      setError(errorMensaje);
+      return;
+    }
 
     axios.post('http://localhost:3008/reservar', {
       lugar: lugarSeleccionado,
@@ -62,6 +90,13 @@ function App() {
     const dni = e.target[1].value;
     const patente = e.target[2].value;
     const modelo = e.target[3].value;
+
+    // Validar datos
+    const errorMensaje = validarDatos(nombre, dni, patente, modelo);
+    if (errorMensaje) {
+      setError(errorMensaje);
+      return;
+    }
 
     axios.put(`http://localhost:3008/modificar/${lugarSeleccionado}`, {
       nombre,
@@ -120,6 +155,7 @@ function App() {
           lugar={lugarSeleccionado}
           onClose={cerrarModales}
           onReservar={manejarReserva}
+          error={error}
         />
       )}
       {mostrarModalModificar && (
@@ -129,6 +165,7 @@ function App() {
           onGuardar={manejarModificacion}
           onEliminar={manejarEliminacion}
           onClose={cerrarModales}
+          error={error}
         />
       )}
       <img src="../public/parking.png" alt="Parking Icon" />

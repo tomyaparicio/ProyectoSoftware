@@ -1,11 +1,12 @@
 /* eslint-disable react/prop-types */
 import './modal.css';
 
-function ReservaModal({ lugar, onClose, onReservar }) {
+function ReservaModal({ lugar, onClose, onReservar, error }) {
   return (
     <div className="modal">
       <div className="modal-content">
-        <h2>{lugar}</h2>
+        <h2 className="lu">{lugar}</h2>
+        {error && <p className="error">{error}</p>}
         <form onSubmit={onReservar}>
           <input type="text" placeholder="Nombre y apellido" required />
           <input type="text" placeholder="DNI" required />
