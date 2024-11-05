@@ -1,7 +1,93 @@
+import { useState, useEffect } from 'react';
 import Lugar from './components/Lugar';
+import ReservaModal from './components/ReservaModal';
+import ModificarModal from './components/ModificarModal';
 import './App.css';
+import axios from 'axios';
 
 function App() {
+  const [lugares, setLugares] = useState([]);
+  const [lugarSeleccionado, setLugarSeleccionado] = useState(null);
+  const [datosLugar, setDatosLugar] = useState(null);
+  const [mostrarModalReserva, setMostrarModalReserva] = useState(false);
+  const [mostrarModalModificar, setMostrarModalModificar] = useState(false);
+
+  useEffect(() => {
+    // Cargar los lugares al iniciar
+    axios.get('http://localhost:3008/lugares')
+      .then(response => setLugares(response.data))
+      .catch(error => console.error('Error al cargar los lugares:', error));
+  }, []);
+
+  const abrirModalReserva = (lugar) => {
+    setLugarSeleccionado(lugar);
+    setMostrarModalReserva(true);
+  };
+
+  const abrirModalModificar = (lugar, datos) => {
+    setLugarSeleccionado(lugar);
+    setDatosLugar(datos);
+    setMostrarModalModificar(true);
+  };
+
+  const cerrarModales = () => {
+    setLugarSeleccionado(null);
+    setDatosLugar(null);
+    setMostrarModalReserva(false);
+    setMostrarModalModificar(false);
+  };
+
+  const manejarReserva = (e) => {
+    e.preventDefault();
+    const nombre = e.target[0].value;
+    const dni = e.target[1].value;
+    const patente = e.target[2].value;
+    const modelo = e.target[3].value;
+
+    axios.post('http://localhost:3008/reservar', {
+      lugar: lugarSeleccionado,
+      nombre,
+      dni,
+      patente,
+      modelo
+    }).then(() => {
+      cerrarModales();
+      actualizarLugares();
+    }).catch(error => console.error('Error al reservar:', error));
+  };
+
+  const manejarModificacion = (e) => {
+    e.preventDefault();
+    const nombre = e.target[0].value;
+    const dni = e.target[1].value;
+    const patente = e.target[2].value;
+    const modelo = e.target[3].value;
+
+    axios.put(`http://localhost:3008/modificar/${lugarSeleccionado}`, {
+      nombre,
+      dni,
+      patente,
+      modelo
+    }).then(() => {
+      cerrarModales();
+      actualizarLugares();
+    }).catch(error => console.error('Error al modificar la reserva:', error));
+  };
+
+  const manejarEliminacion = () => {
+    axios.delete(`http://localhost:3008/eliminar/${lugarSeleccionado}`)
+      .then(() => {
+        cerrarModales();
+        actualizarLugares();
+      }).catch(error => console.error('Error al eliminar la reserva:', error));
+  };
+
+  const actualizarLugares = () => {
+    axios.get('http://localhost:3008/lugares')
+      .then(response => setLugares(response.data))
+      .catch(error => console.error('Error al actualizar los lugares:', error));
+  };
+
   return (
     <div className="app">
       <h1>Gestión de Estacionamiento</h1>
@@ -14,30 +100,37 @@ function App() {
         </div>
       </div>
       <div className="estacionamiento">
-        <Lugar texto="A1" ocupado={false} />
-        <Lugar texto="A2" ocupado={false} />
-        <Lugar texto="A3" ocupado={false} />
-        <Lugar texto="A4" ocupado={false} />
-        <Lugar texto="A5" ocupado={false} />
-        <Lugar texto="B1" ocupado={false} />
-        <Lugar texto="B2" ocupado={false} />
-        <Lugar texto="B3" ocupado={true} />
-        <Lugar texto="B4" ocupado={false} />
-        <Lugar texto="B5" ocupado={false} />
-        <Lugar texto="C1" ocupado={false} />
-        <Lugar texto="C2" ocupado={false} />
-        <Lugar texto="C3" ocupado={false} />
-        <Lugar texto="C4" ocupado={false} />
-        <Lugar texto="C5" ocupado={true} />
-        <Lugar texto="D1" ocupado={false} />
-        <Lugar texto="D2" ocupado={false} />
-        <Lugar texto="D3" ocupado={true} />
-        <Lugar texto="D4" ocupado={true} />
-        <Lugar texto="D5" ocupado={false} />
+        {lugares.map((lugar) => (
+          <Lugar
+            key={lugar.lugar}
+            texto={lugar.lugar}
+            ocupado={!lugar.libre}
+            onClick={() => {
+              if (lugar.libre) {
+                abrirModalReserva(lugar.lugar);
+              } else {
+                abrirModalModificar(lugar.lugar, lugar);
+              }
+            }}
+          />
+        ))}
       </div>
-      <div className="icono-estacionamiento">
-        <img src="../public/parking.png" alt="Parking Icon" />
-      </div>
+      {mostrarModalReserva && (
+        <ReservaModal
+          lugar={lugarSeleccionado}
+          onClose={cerrarModales}
+          onReservar={manejarReserva}
+        />
+      )}
+      {mostrarModalModificar && (
+        <ModificarModal
+          lugar={lugarSeleccionado}
+          datos={datosLugar}
+          onGuardar={manejarModificacion}
+          onEliminar={manejarEliminacion}
+          onClose={cerrarModales}
+        />
+      )}
     </div>
   );
 }
