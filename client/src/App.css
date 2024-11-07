@@ -1,6 +1,41 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #333;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
 .app {
   text-align: center;
+  max-width: 800px; /* Aumentamos el ancho máximo para acomodar los espacios más grandes */
+}
+
+.app-header {
+  display: flex;
+  justify-content: center;
   padding: 20px;
+}
+
+h1 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+
+.parking-icon {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 50px;
+  height: auto;
 }
 
 .leyenda {
@@ -10,9 +45,9 @@
 }
 
 .leyenda-item {
+  margin: 0 10px;
   display: flex;
   align-items: center;
-  margin: 0 10px;
 }
 
 .cuadro {
@@ -22,26 +57,39 @@
 }
 
 .libre {
-  background-color: #d3d3d3; /* Gris */
+  background-color: #d3d3d3;
 }
 
 .ocupado {
-  background-color: #ff4c4c; /* Rojo */
+  background-color: #ff6666;
 }
 
 .estacionamiento {
   display: grid;
-  grid-template-columns: repeat(5, 70px);
-  gap: 10px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 15px; /* Ajustamos el espacio entre los lugares */
   justify-content: center;
-  margin-top: 20px;
+  max-width: 500px;
+  margin: 0 auto;
 }
 
-.icono-estacionamiento {
-  margin-top: 30px;
+.lugar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 120px; /* Aumentamos el tamaño de los lugares */
+  height: 120px; /* Aumentamos el tamaño de los lugares */
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.2rem;
+  border-radius: 8px;
+  color: black;
 }
 
-.icono-estacionamiento img {
-  width: 50px;
-  height: 50px;
+.libre {
+  background-color: #d3d3d3;
+}
+
+.ocupado {
+  background-color: #ff6666;
 }

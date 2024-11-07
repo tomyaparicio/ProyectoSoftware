@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
-import Lugar from './components/Lugar';
-import ReservaModal from './components/ReservaModal';
-import ModificarModal from './components/ModificarModal';
-import './App.css';
-import axios from 'axios';
+import { useState, useEffect } from "react";
+import Lugar from "./components/Lugar";
+import ReservaModal from "./components/ReservaModal";
+import ModificarModal from "./components/ModificarModal";
+import "./App.css";
+import axios from "axios";
 
 function App() {
   const [lugares, setLugares] = useState([]);
@@ -11,13 +11,14 @@ function App() {
   const [datosLugar, setDatosLugar] = useState(null);
   const [mostrarModalReserva, setMostrarModalReserva] = useState(false);
   const [mostrarModalModificar, setMostrarModalModificar] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
     // Cargar los lugares al iniciar
-    axios.get('http://localhost:3008/lugares')
-      .then(response => setLugares(response.data))
-      .catch(error => console.error('Error al cargar los lugares:', error));
+    axios
+      .get("http://localhost:3008/lugares")
+      .then((response) => setLugares(response.data))
+      .catch((error) => console.error("Error al cargar los lugares:", error));
   }, []);
 
   const abrirModalReserva = (lugar) => {
@@ -36,26 +37,26 @@ function App() {
     setDatosLugar(null);
     setMostrarModalReserva(false);
     setMostrarModalModificar(false);
-    setError('');
+    setError("");
   };
 
   const validarDatos = (nombre, dni, patente, modelo) => {
     if (!nombre || !dni || !patente || !modelo) {
-      return 'Todos los campos deben estar completos.';
+      return "Todos los campos deben estar completos.";
     }
     if (nombre.length < 4) {
-      return 'El nombre debe tener al menos 4 caracteres.';
+      return "El nombre debe tener al menos 4 caracteres.";
     }
     if (dni.length < 6 || !/^\d+$/.test(dni)) {
-      return 'El DNI debe tener al menos 6 caracteres y contener solo números.';
+      return "El DNI debe tener al menos 6 caracteres y contener solo números.";
     }
     if (patente.length < 6) {
-      return 'La patente debe tener al menos 6 caracteres.';
+      return "La patente debe tener al menos 6 caracteres.";
     }
     if (modelo.length < 5) {
-      return 'El modelo del vehículo debe tener al menos 5 caracteres.';
+      return "El modelo del vehículo debe tener al menos 5 caracteres.";
     }
-    return '';
+    return "";
   };
 
   const manejarReserva = (e) => {
@@ -72,16 +73,19 @@ function App() {
       return;
     }
 
-    axios.post('http://localhost:3008/reservar', {
-      lugar: lugarSeleccionado,
-      nombre,
-      dni,
-      patente,
-      modelo
-    }).then(() => {
-      cerrarModales();
-      actualizarLugares();
-    }).catch(error => console.error('Error al reservar:', error));
+    axios
+      .post("http://localhost:3008/reservar", {
+        lugar: lugarSeleccionado,
+        nombre,
+        dni,
+        patente,
+        modelo,
+      })
+      .then(() => {
+        cerrarModales();
+        actualizarLugares();
+      })
+      .catch((error) => console.error("Error al reservar:", error));
   };
 
   const manejarModificacion = (e) => {
@@ -98,34 +102,45 @@ function App() {
       return;
     }
 
-    axios.put(`http://localhost:3008/modificar/${lugarSeleccionado}`, {
-      nombre,
-      dni,
-      patente,
-      modelo
-    }).then(() => {
-      cerrarModales();
-      actualizarLugares();
-    }).catch(error => console.error('Error al modificar la reserva:', error));
-  };
-
-  const manejarEliminacion = () => {
-    axios.delete(`http://localhost:3008/eliminar/${lugarSeleccionado}`)
+    axios
+      .put(`http://localhost:3008/modificar/${lugarSeleccionado}`, {
+        nombre,
+        dni,
+        patente,
+        modelo,
+      })
       .then(() => {
         cerrarModales();
         actualizarLugares();
-      }).catch(error => console.error('Error al eliminar la reserva:', error));
+      })
+      .catch((error) => console.error("Error al modificar la reserva:", error));
+  };
+
+  const manejarEliminacion = () => {
+    axios
+      .delete(`http://localhost:3008/eliminar/${lugarSeleccionado}`)
+      .then(() => {
+        cerrarModales();
+        actualizarLugares();
+      })
+      .catch((error) => console.error("Error al eliminar la reserva:", error));
   };
 
   const actualizarLugares = () => {
-    axios.get('http://localhost:3008/lugares')
-      .then(response => setLugares(response.data))
-      .catch(error => console.error('Error al actualizar los lugares:', error));
+    axios
+      .get("http://localhost:3008/lugares")
+      .then((response) => setLugares(response.data))
+      .catch((error) =>
+        console.error("Error al actualizar los lugares:", error)
+      );
   };
 
   return (
     <div className="app">
-      <h1>Gestión de Estacionamiento</h1>
+      <header className="app-header">
+        <h1>Gestión de Estacionamiento</h1>
+        <img src="/parking.png" alt="Parking Icon" className="parking-icon" />
+      </header>
       <div className="leyenda">
         <div className="leyenda-item">
           <div className="cuadro libre"></div> libre
@@ -168,7 +183,6 @@ function App() {
           error={error}
         />
       )}
-      <img src="../public/parking.png" alt="Parking Icon" />
     </div>
   );
 }
